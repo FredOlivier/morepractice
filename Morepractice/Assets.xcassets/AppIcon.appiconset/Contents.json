@@ -1,0 +1,14 @@
+{
+  "images" : [
+    {
+      "filename" : "DALL·E 2024-09-23 14.42.38 - A modern 152x152 app icon with a Frutiger Aero design, featuring a smooth and glossy four-leaf clover at the center. The background should have a brig copy.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
