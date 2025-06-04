@@ -1,22 +1,34 @@
-// SignUpView.swift
+//  SignUpView.swift
 
 import SwiftUI
 
 struct SignUpView: View {
+    // MARK: ‑ Environment
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var appViewModel: AppViewModel        // Added earlier
+    @EnvironmentObject var scoreManager: ScoreManager        // If needed
+    @EnvironmentObject var mediaManager: MediaManager    
+    // If needed
+    // @EnvironmentObject var autoChatManager: AutoChatManager // If needed
+    
+    /// NEW: lets us programmatically close this view when sign‑up finishes
+    @Environment(\.dismiss) private var dismiss
+    
+    // MARK: ‑ State
     @State private var displayName: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var showError: Bool = false
     @State private var errorMessage: String = ""
     
+    // MARK: ‑ Body
     var body: some View {
         VStack(spacing: 20) {
             Text("Sign Up")
                 .font(.largeTitle)
                 .bold()
             
-            // Display Name TextField
+            // Display Name
             TextField("Display Name", text: $displayName)
                 .autocapitalization(.words)
                 .padding()
@@ -25,7 +37,7 @@ struct SignUpView: View {
                 .accessibilityLabel("Display Name Field")
                 .accessibilityHint("Enter your display name")
             
-            // Email TextField
+            // Email
             TextField("Email", text: $email)
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
@@ -35,7 +47,7 @@ struct SignUpView: View {
                 .accessibilityLabel("Email Field")
                 .accessibilityHint("Enter your email address")
             
-            // Password SecureField
+            // Password
             SecureField("Password", text: $password)
                 .padding()
                 .background(Color(.secondarySystemBackground))
@@ -43,7 +55,7 @@ struct SignUpView: View {
                 .accessibilityLabel("Password Field")
                 .accessibilityHint("Enter your password")
             
-            // Error Message
+            // Error
             if showError {
                 Text(errorMessage)
                     .foregroundColor(.red)
@@ -52,7 +64,7 @@ struct SignUpView: View {
                     .accessibilityHint(errorMessage)
             }
             
-            // Sign Up Button
+            // Sign‑Up Button
             Button(action: {
                 signUp()
             }) {
@@ -71,11 +83,19 @@ struct SignUpView: View {
         .padding()
         .navigationTitle("Sign Up")
         .navigationBarTitleDisplayMode(.inline)
+        /*  (toolbar removed earlier but left here commented for reference)
+        .toolbar { … }
+        */
+        // ───────────────────────────────────────────────────────────────
+        // NEW: as soon as the auth layer reports “signed‑in”, pop this view
+        .onReceive(authViewModel.$isSignedIn) { signedIn in
+            if signedIn {
+                dismiss()
+            }
+        }
     }
     
-    // MARK: - Sign Up Function
-    
-    /// Handles user sign-up action.
+    // MARK: ‑ Sign‑Up Logic
     private func signUp() {
         // Basic validation
         guard !displayName.isEmpty, !email.isEmpty, !password.isEmpty else {
@@ -84,22 +104,16 @@ struct SignUpView: View {
             return
         }
         
-        authViewModel.signUp(name: displayName, email: email, password: password) { error in
+        authViewModel.signUp(name: displayName,
+                             email: email,
+                             password: password) { error in
             if let error = error {
                 self.errorMessage = error.localizedDescription
                 self.showError = true
             } else {
-                // Successful sign-up is handled by AuthViewModel's listener.
+                // The auth listener flips isSignedIn; onReceive handles dismissal.
                 self.showError = false
             }
         }
-    }
-}
-
-struct SignUpView_Previews: PreviewProvider {
-    static var previews: some View {
-        let authVM = AuthViewModel()
-        SignUpView()
-            .environmentObject(authVM)
     }
 }

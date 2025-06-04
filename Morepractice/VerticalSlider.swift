@@ -1,11 +1,3 @@
-//
-//  VerticalSlider.swift
-//  Morepractice
-//
-//  Created by Fred Olivier on 17/09/2024.
-//
-
-import Foundation
 // VerticalSlider.swift
 
 import SwiftUI
@@ -15,7 +7,9 @@ struct VerticalSlider: View {
     let thumbColor: Color
     let trackColor: Color
     let thumbOpacity: Double
-    let hapticFeedback: Bool
+
+    @EnvironmentObject var settingsManager: SettingsManager // Injected
+    @EnvironmentObject var soundManager: SoundManager // Injected
 
     var body: some View {
         GeometryReader { geometry in
@@ -33,11 +27,14 @@ struct VerticalSlider: View {
                         DragGesture(minimumDistance: 0)
                             .onChanged { drag in
                                 let newValue = min(max(0, 1 - Double(drag.location.y / height)), 1)
-                                if hapticFeedback {
-                                    let impact = UIImpactFeedbackGenerator(style: .heavy)
-                                    impact.impactOccurred()
-                                }
                                 value = newValue
+
+                                // Haptic Feedback on Slider Change
+                            //    if settingsManager.hapticFeedbackEnabled {
+                         //           let generator = UIImpactFeedbackGenerator(style: .heavy)
+                       //             generator.prepare()
+                         //           generator.impactOccurred(intensity: CGFloat(signOf: CGFloat(Float(settingsManager.hapticStrength)), magnitudeOf: 1.0)) // Clamp to 1.0
+                     //           }
                             }
                     )
 
@@ -50,5 +47,25 @@ struct VerticalSlider: View {
                     .offset(y: yPosition - 15) // Adjust for thumb height
             }
         }
+        .onAppear {
+            // Play booting up sound if enabled
+//            if settingsManager.soundEnabled {
+ //               soundManager.playSound(named: "bootup")
+//            }
+        }
+    }
+}
+
+struct VerticalSlider_Previews: PreviewProvider {
+    static var previews: some View {
+        let settingsMgr = SettingsManager()
+        let soundMgr = SoundManager.shared
+
+        VerticalSlider(value: .constant(0.5), thumbColor: .blue, trackColor: .gray, thumbOpacity: 0.5)
+            .environmentObject(settingsMgr)
+            .environmentObject(soundMgr)
+            .previewLayout(.sizeThatFits)
+            .padding()
+            .background(Color.black)
     }
 }

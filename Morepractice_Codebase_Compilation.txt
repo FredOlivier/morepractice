@@ -1,0 +1,1108 @@
+# MOREPRACTICE APP - CODEBASE COMPILATION
+# Generated on March 13, 2025
+
+## TABLE OF CONTENTS
+
+### PLIST Files
+1. GoogleService-Info.plist
+2. Info.plist
+
+### Model Files
+1. AppUserModel.swift
+2. Models.swift
+3. SimilarUserModel.swift
+4. Score.swift
+5. TagScore.swift
+6. PersistentChatRecord (in ConnectionsView.swift)
+
+### ViewModel Files
+1. AppViewModel.swift
+2. AuthViewModel.swift
+3. ChatViewModel.swift
+4. EphemeralChatViewModel.swift
+5. DashboardViewModel.swift
+
+### View Files
+1. MorepracticeApp.swift
+2. ContentView.swift
+3. MainAppView.swift
+4. CircleDashboardView.swift
+5. SignInView.swift
+6. SignUpView.swift
+7. CircularDashboard.swift
+8. MeView.swift
+9. DashboardView.swift
+10. MyHeartView.swift
+11. ImageScoringView.swift
+12. ImageScoringViewWrapper.swift
+13. PersistentChatView.swift
+14. TemporaryChatView.swift
+15. ConnectionsView.swift
+16. SimilarUsersSectionView.swift
+17. ScoreDetailView.swift
+18. VerticalSlider.swift
+
+### Manager Files
+1. LinkManager.swift
+2. LinkEligibilityManager.swift
+3. MediaManager.swift
+4. ScoreManager.swift
+5. SoundManager.swift
+6. SettingsManager.swift
+
+### Utility Files
+1. ChatUtils.swift
+2. MediaProtocols.swift
+
+## FILE CONTENTS
+
+### PLIST FILES
+
+#### 1. GoogleService-Info.plist
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>VGhpcyBpcyBhIHByYWN0aWNlIGFwcC4gUGxlYXNlIGRvIG5vdCBzaGFyZSB0aGlzIGluZm9ybWF0aW9uLg==</string>
+	<key>GCM_SENDER_ID</key>
+	<string>EXAMPLE-SENDER-ID</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.fredolivier.Morepractice</string>
+	<key>PROJECT_ID</key>
+	<string>morepractice-project</string>
+	<key>STORAGE_BUCKET</key>
+	<string>morepractice-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1234567890:ios:abcdefghijklmn</string>
+</dict>
+</plist>
+```
+
+#### 2. Info.plist
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1234567890-abcdefghijklmnopqrstuvwxyz</string>
+			</array>
+		</dict>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Roboto-Regular.ttf</string>
+		<string>Roboto-Bold.ttf</string>
+	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to allow you to choose photos for image scoring.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to allow you to take photos for image scoring.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone for audio communications.</string>
+</dict>
+</plist>
+```
+
+### MODEL FILES
+
+#### 1. AppUserModel.swift
+```swift
+//  AppUserModel.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 08/10/2024.
+//
+
+import Foundation
+
+struct AppUser: Identifiable {
+    let id: String
+    let name: String
+    let email: String
+    let isOnline: Bool
+    let uid: String
+    let similarityScore: Double
+}
+```
+
+#### 2. Models.swift
+```swift
+//
+//  Models.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 20/09/2024.
+//
+
+import Foundation
+
+// Define the Photo struct globally
+struct Photo: Identifiable, Codable, Hashable {
+    var id: String
+    var category: String
+    var url: String
+}
+```
+
+#### 3. SimilarUserModel.swift
+```swift
+import Foundation
+
+struct SimilarUser: Identifiable, Hashable {
+    let id: String       // user's unique name or uid
+    let name: String
+    let email: String
+    let isOnline: Bool
+    let similarityScore: Double
+    
+    // Since all properties are Hashable (String, Bool, Double), SimilarUser is automatically Hashable.
+    // No custom hash(into:) or == needed.
+}
+```
+
+#### 4. Score.swift
+```swift
+//
+//  Score.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 20/09/2024.
+//
+
+import Foundation
+
+struct Score: Identifiable, Codable {
+    let id: String
+    let userId: String
+    let slider1: Double
+    let slider2: Double
+    let relationalScore: Double
+    let image1: String
+    let image2: String
+    let image1URL: String
+    let image2URL: String
+    let date: Date
+}
+```
+
+#### 5. TagScore.swift
+```swift
+//
+//  TagScore.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 20/09/2024.
+//
+
+import Foundation
+
+struct TagScore: Identifiable, Codable {
+    var id: String
+    var tag: String
+    var score: Double
+    var userId: String
+    var count: Int
+    var date: Date
+}
+```
+
+#### 6. PersistentChatRecord (in ConnectionsView.swift)
+```swift
+public struct PersistentChatRecord: Identifiable {
+    public let id: String
+    public let user1: String
+    public let user2: String
+    public let participants: [String]
+    public let lastMessagePreview: String?
+}
+```
+
+#### 7. ChatMessage (in PersistentChatView.swift)
+```swift
+public struct ChatMessage: Identifiable, Hashable {
+    public let id: String
+    public let sender: String
+    public let content: String
+    public let timestamp: Date
+}
+```
+
+### VIEWMODEL FILES
+
+#### 1. AppViewModel.swift
+```swift
+//
+//  AppViewModel.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import Foundation
+import Combine
+import FirebaseAuth
+import FirebaseFirestore
+
+class AppViewModel: ObservableObject {
+    @Published var isAuthenticated = false
+    @Published var currentUser: AppUser?
+    @Published var isLoading = false
+    
+    private var cancellables = Set<AnyCancellable>()
+    private let db = Firestore.firestore()
+    
+    init() {
+        // Listen for auth state changes
+        Auth.auth().addStateDidChangeListener { [weak self] (_, user) in
+            DispatchQueue.main.async {
+                self?.isAuthenticated = user != nil
+                if let user = user {
+                    self?.fetchUserData(uid: user.uid)
+                } else {
+                    self?.currentUser = nil
+                }
+            }
+        }
+    }
+    
+    private func fetchUserData(uid: String) {
+        isLoading = true
+        db.collection("users").document(uid).getDocument { [weak self] (document, error) in
+            DispatchQueue.main.async {
+                if let document = document, document.exists, let data = document.data() {
+                    self?.currentUser = AppUser(
+                        id: document.documentID,
+                        name: data["name"] as? String ?? "",
+                        email: data["email"] as? String ?? "",
+                        isOnline: data["isOnline"] as? Bool ?? false,
+                        uid: document.documentID,
+                        similarityScore: 0.0
+                    )
+                }
+                self?.isLoading = false
+            }
+        }
+    }
+}
+```
+
+### VIEW FILES
+
+#### 1. MorepracticeApp.swift
+```swift
+//
+//  MorepracticeApp.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+import FirebaseCore
+
+@main
+struct MorepracticeApp: App {
+    @StateObject private var appViewModel = AppViewModel()
+    @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var settingsManager = SettingsManager()
+    
+    init() {
+        // Configure Firebase
+        FirebaseApp.configure()
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appViewModel)
+                .environmentObject(authViewModel)
+                .environmentObject(settingsManager)
+        }
+    }
+}
+```
+
+#### 2. ContentView.swift
+```swift
+//
+//  ContentView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
+    var body: some View {
+        Group {
+            if authViewModel.isAuthenticated {
+                MainAppView()
+            } else {
+                SignInView()
+            }
+        }
+        .animation(.default, value: authViewModel.isAuthenticated)
+    }
+}
+```
+
+#### 3. MainAppView.swift
+```swift
+//
+//  MainAppView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 03/10/2024.
+//
+
+import SwiftUI
+
+struct MainAppView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var selectedTab = 0
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            CircleDashboardView()
+                .tabItem {
+                    Label("Heart", systemImage: "heart.fill")
+                }
+                .tag(0)
+            
+            ConnectionsView()
+                .tabItem {
+                    Label("Connections", systemImage: "person.2.fill")
+                }
+                .tag(1)
+            
+            MeView()
+                .tabItem {
+                    Label("Me", systemImage: "person.fill")
+                }
+                .tag(2)
+        }
+        .accentColor(.pink)
+    }
+}
+```
+
+#### 2. AuthViewModel.swift
+```swift
+//
+//  AuthViewModel.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import Foundation
+import Combine
+import FirebaseAuth
+import FirebaseFirestore
+
+class AuthViewModel: ObservableObject {
+    @Published var email = ""
+    @Published var password = ""
+    @Published var name = ""
+    @Published var errorMessage = ""
+    @Published var isLoading = false
+    @Published var isAuthenticated = false
+    
+    private let db = Firestore.firestore()
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        // Listen for auth state changes
+        Auth.auth().addStateDidChangeListener { [weak self] (_, user) in
+            DispatchQueue.main.async {
+                self?.isAuthenticated = user != nil
+            }
+        }
+    }
+    
+    func signIn() {
+        guard !email.isEmpty && !password.isEmpty else {
+            errorMessage = "Please enter both email and password."
+            return
+        }
+        
+        isLoading = true
+        errorMessage = ""
+        
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] (result, error) in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                if let error = error {
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    func signUp() {
+        guard !email.isEmpty && !password.isEmpty && !name.isEmpty else {
+            errorMessage = "Please fill in all fields."
+            return
+        }
+        
+        if password.count < 6 {
+            errorMessage = "Password must be at least 6 characters long."
+            return
+        }
+        
+        isLoading = true
+        errorMessage = ""
+        
+        Auth.auth().createUser(withEmail: email, password: password) { [weak self] (result, error) in
+            if let error = error {
+                DispatchQueue.main.async {
+                    self?.isLoading = false
+                    self?.errorMessage = error.localizedDescription
+                }
+                return
+            }
+            
+            guard let userId = result?.user.uid else {
+                DispatchQueue.main.async {
+                    self?.isLoading = false
+                    self?.errorMessage = "Failed to create user."
+                }
+                return
+            }
+            
+            // Create user document in Firestore
+            self?.createUserDocument(userId: userId) { success in
+                DispatchQueue.main.async {
+                    self?.isLoading = false
+                    if !success {
+                        self?.errorMessage = "Failed to create user profile."
+                    }
+                }
+            }
+        }
+    }
+    
+    private func createUserDocument(userId: String, completion: @escaping (Bool) -> Void) {
+        let userData: [String: Any] = [
+            "name": name,
+            "email": email,
+            "isOnline": true,
+            "createdAt": Timestamp(date: Date())
+        ]
+        
+        db.collection("users").document(userId).setData(userData) { error in
+            completion(error == nil)
+        }
+    }
+    
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+}
+```
+
+### VIEW FILES
+
+#### 1. MorepracticeApp.swift
+```swift
+//
+//  MorepracticeApp.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+import FirebaseCore
+
+@main
+struct MorepracticeApp: App {
+    @StateObject private var appViewModel = AppViewModel()
+    @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var settingsManager = SettingsManager()
+    
+    init() {
+        // Configure Firebase
+        FirebaseApp.configure()
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appViewModel)
+                .environmentObject(authViewModel)
+                .environmentObject(settingsManager)
+        }
+    }
+}
+```
+
+#### 2. ContentView.swift
+```swift
+//
+//  ContentView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
+    var body: some View {
+        Group {
+            if authViewModel.isAuthenticated {
+                MainAppView()
+            } else {
+                SignInView()
+            }
+        }
+        .animation(.default, value: authViewModel.isAuthenticated)
+    }
+}
+```
+
+#### 3. MainAppView.swift
+```swift
+//
+//  MainAppView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 03/10/2024.
+//
+
+import SwiftUI
+
+struct MainAppView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var selectedTab = 0
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            CircleDashboardView()
+                .tabItem {
+                    Label("Heart", systemImage: "heart.fill")
+                }
+                .tag(0)
+            
+            ConnectionsView()
+                .tabItem {
+                    Label("Connections", systemImage: "person.2.fill")
+                }
+                .tag(1)
+            
+            MeView()
+                .tabItem {
+                    Label("Me", systemImage: "person.fill")
+                }
+                .tag(2)
+        }
+        .accentColor(.pink)
+    }
+}
+```
+
+#### 3. ChatViewModel.swift
+```swift
+//
+//  ChatViewModel.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 05/10/2024.
+//
+
+import Foundation
+import FirebaseAuth
+import FirebaseFirestore
+import Combine
+
+class ChatViewModel: ObservableObject {
+    @Published var messages: [ChatMessage] = []
+    @Published var newMessage = ""
+    @Published var isLoading = false
+    @Published var errorMessage = ""
+    
+    private let db = Firestore.firestore()
+    private var chatId: String
+    private var listener: ListenerRegistration?
+    private var userId: String
+    private var otherUserId: String
+    
+    init(chatId: String, userId: String, otherUserId: String) {
+        self.chatId = chatId
+        self.userId = userId
+        self.otherUserId = otherUserId
+        fetchMessages()
+    }
+    
+    deinit {
+        // Remove Firestore listener when ViewModel is deallocated
+        listener?.remove()
+    }
+    
+    func fetchMessages() {
+        isLoading = true
+        
+        listener = db.collection("chats").document(chatId).collection("messages")
+            .order(by: "timestamp", descending: false)
+            .addSnapshotListener { [weak self] (snapshot, error) in
+                guard let self = self else { return }
+                
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    
+                    if let error = error {
+                        self.errorMessage = error.localizedDescription
+                        return
+                    }
+                    
+                    guard let documents = snapshot?.documents else {
+                        self.errorMessage = "No messages found."
+                        return
+                    }
+                    
+                    self.messages = documents.compactMap { document -> ChatMessage? in
+                        let data = document.data()
+                        guard let sender = data["sender"] as? String,
+                              let content = data["content"] as? String,
+                              let timestamp = data["timestamp"] as? Timestamp else {
+                            return nil
+                        }
+                        
+                        return ChatMessage(
+                            id: document.documentID,
+                            sender: sender,
+                            content: content,
+                            timestamp: timestamp.dateValue()
+                        )
+                    }
+                }
+            }
+    }
+    
+    func sendMessage() {
+        guard !newMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        
+        let message: [String: Any] = [
+            "sender": userId,
+            "content": newMessage,
+            "timestamp": Timestamp(date: Date())
+        ]
+        
+        // Add message to the chat
+        db.collection("chats").document(chatId).collection("messages").addDocument(data: message) { [weak self] error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.errorMessage = error.localizedDescription
+                } else {
+                    self?.newMessage = ""
+                    // Update the last message preview in the chat document
+                    self?.updateLastMessagePreview()
+                }
+            }
+        }
+    }
+    
+    private func updateLastMessagePreview() {
+        let lastMessagePreview = newMessage.prefix(30).appending(newMessage.count > 30 ? "..." : "")
+        let chatData: [String: Any] = [
+            "lastMessagePreview": lastMessagePreview,
+            "lastUpdated": Timestamp(date: Date())
+        ]
+        
+        db.collection("chats").document(chatId).setData(chatData, merge: true) { [weak self] error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+}
+```
+
+### VIEW FILES
+
+#### 1. MorepracticeApp.swift
+```swift
+//
+//  MorepracticeApp.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+import FirebaseCore
+
+@main
+struct MorepracticeApp: App {
+    @StateObject private var appViewModel = AppViewModel()
+    @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var settingsManager = SettingsManager()
+    
+    init() {
+        // Configure Firebase
+        FirebaseApp.configure()
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appViewModel)
+                .environmentObject(authViewModel)
+                .environmentObject(settingsManager)
+        }
+    }
+}
+```
+
+#### 2. ContentView.swift
+```swift
+//
+//  ContentView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
+    var body: some View {
+        Group {
+            if authViewModel.isAuthenticated {
+                MainAppView()
+            } else {
+                SignInView()
+            }
+        }
+        .animation(.default, value: authViewModel.isAuthenticated)
+    }
+}
+```
+
+#### 3. MainAppView.swift
+```swift
+//
+//  MainAppView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 03/10/2024.
+//
+
+import SwiftUI
+
+struct MainAppView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var selectedTab = 0
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            CircleDashboardView()
+                .tabItem {
+                    Label("Heart", systemImage: "heart.fill")
+                }
+                .tag(0)
+            
+            ConnectionsView()
+                .tabItem {
+                    Label("Connections", systemImage: "person.2.fill")
+                }
+                .tag(1)
+            
+            MeView()
+                .tabItem {
+                    Label("Me", systemImage: "person.fill")
+                }
+                .tag(2)
+        }
+        .accentColor(.pink)
+    }
+}
+```
+
+#### 4. EphemeralChatViewModel.swift
+```swift
+//
+//  EphemeralChatViewModel.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 10/10/2024.
+//
+
+import Foundation
+import Combine
+import FirebaseFirestore
+
+class EphemeralChatViewModel: ObservableObject {
+    @Published var messages: [ChatMessage] = []
+    @Published var newMessage = ""
+    @Published var isLoading = false
+    @Published var errorMessage = ""
+    
+    private let db = Firestore.firestore()
+    private var chatId: String
+    private var userId: String
+    private var otherUserId: String
+    private var timer: Timer?
+    private var messageExpirationTime: TimeInterval = 300 // 5 minutes by default
+    
+    init(chatId: String, userId: String, otherUserId: String, expirationTime: TimeInterval = 300) {
+        self.chatId = chatId
+        self.userId = userId
+        self.otherUserId = otherUserId
+        self.messageExpirationTime = expirationTime
+        
+        fetchMessages()
+        startExpirationTimer()
+    }
+    
+    deinit {
+        timer?.invalidate()
+    }
+    
+    private func startExpirationTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+            self?.checkAndRemoveExpiredMessages()
+        }
+    }
+    
+    private func checkAndRemoveExpiredMessages() {
+        let currentTime = Date()
+        
+        messages = messages.filter { message in
+            // Keep messages that haven't expired yet
+            return currentTime.timeIntervalSince(message.timestamp) < messageExpirationTime
+        }
+    }
+    
+    func fetchMessages() {
+        isLoading = true
+        
+        db.collection("ephemeralChats").document(chatId).collection("messages")
+            .order(by: "timestamp", descending: false)
+            .getDocuments { [weak self] (snapshot, error) in
+                guard let self = self else { return }
+                
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    
+                    if let error = error {
+                        self.errorMessage = error.localizedDescription
+                        return
+                    }
+                    
+                    guard let documents = snapshot?.documents else {
+                        return
+                    }
+                    
+                    let currentTime = Date()
+                    
+                    self.messages = documents.compactMap { document -> ChatMessage? in
+                        let data = document.data()
+                        guard let sender = data["sender"] as? String,
+                              let content = data["content"] as? String,
+                              let timestamp = data["timestamp"] as? Timestamp else {
+                            return nil
+                        }
+                        
+                        let messageTimestamp = timestamp.dateValue()
+                        
+                        // Only include messages that haven't expired
+                        if currentTime.timeIntervalSince(messageTimestamp) < self.messageExpirationTime {
+                            return ChatMessage(
+                                id: document.documentID,
+                                sender: sender,
+                                content: content,
+                                timestamp: messageTimestamp
+                            )
+                        } else {
+                            // Delete expired messages from Firestore
+                            self.db.collection("ephemeralChats").document(self.chatId)
+                                .collection("messages").document(document.documentID).delete()
+                            return nil
+                        }
+                    }
+                }
+            }
+    }
+    
+    func sendMessage() {
+        guard !newMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        
+        let message: [String: Any] = [
+            "sender": userId,
+            "content": newMessage,
+            "timestamp": Timestamp(date: Date())
+        ]
+        
+        // Add message to the chat
+        db.collection("ephemeralChats").document(chatId).collection("messages").addDocument(data: message) { [weak self] error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.errorMessage = error.localizedDescription
+                } else {
+                    self?.newMessage = ""
+                    self?.fetchMessages() // Refresh messages after sending
+                }
+            }
+        }
+    }
+}
+```
+
+### VIEW FILES
+
+#### 1. MorepracticeApp.swift
+```swift
+//
+//  MorepracticeApp.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+import FirebaseCore
+
+@main
+struct MorepracticeApp: App {
+    @StateObject private var appViewModel = AppViewModel()
+    @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var settingsManager = SettingsManager()
+    
+    init() {
+        // Configure Firebase
+        FirebaseApp.configure()
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appViewModel)
+                .environmentObject(authViewModel)
+                .environmentObject(settingsManager)
+        }
+    }
+}
+```
+
+#### 2. ContentView.swift
+```swift
+//
+//  ContentView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 01/10/2024.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
+    var body: some View {
+        Group {
+            if authViewModel.isAuthenticated {
+                MainAppView()
+            } else {
+                SignInView()
+            }
+        }
+        .animation(.default, value: authViewModel.isAuthenticated)
+    }
+}
+```
+
+#### 3. MainAppView.swift
+```swift
+//
+//  MainAppView.swift
+//  Morepractice
+//
+//  Created by Fred Olivier on 03/10/2024.
+//
+
+import SwiftUI
+
+struct MainAppView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var selectedTab = 0
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            CircleDashboardView()
+                .tabItem {
+                    Label("Heart", systemImage: "heart.fill")
+                }
+                .tag(0)
+            
+            ConnectionsView()
+                .tabItem {
+                    Label("Connections", systemImage: "person.2.fill")
+                }
+                .tag(1)
+            
+            MeView()
+                .tabItem {
+                    Label("Me", systemImage: "person.fill")
+                }
+                .tag(2)
+        }
+        .accentColor(.pink)
+    }
+}
+```

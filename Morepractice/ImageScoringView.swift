@@ -1,15 +1,12 @@
-//ImageScoringView.swift
-// Morepractice
-//
-// Created by Fred Olivier on 17/09/2024.
-//
-// Updated to ensure images fill the screen top-to-bottom and the navigation bar is transparent.
+// ImageScoringView.swift
 
 import SwiftUI
 
 struct ImageScoringView: View {
     @EnvironmentObject var scoreManager: ScoreManager
     @EnvironmentObject var imageManager: ImageManager
+    @EnvironmentObject var settingsManager: SettingsManager // Injected
+    @EnvironmentObject var soundManager: SoundManager // Injected
 
     @State private var sliderValue1: Double = 0.5
     @State private var sliderValue2: Double = 0.5
@@ -34,39 +31,42 @@ struct ImageScoringView: View {
 
     @State private var viewState: ViewState = .maximizingFirstImage
 
-   
-
     var body: some View {
-        NavigationView {
-            ZStack {
-                switch viewState {
-                case .maximizingFirstImage:
-                    displayImage(photo: currentPhoto1, duration: 2, chainToNextState: .maximizingSecondImage) {}
-                case .maximizingSecondImage:
-                    displayImage(photo: currentPhoto2, duration: 2, chainToNextState: .normalLayout) {}
-                case .enlargingImage1:
-                    displayImage(photo: currentPhoto1, duration: 2, chainToNextState: .normalLayout) {}
-                case .enlargingImage2:
-                    displayImage(photo: currentPhoto2, duration: 2, chainToNextState: .normalLayout) {}
-                case .normalLayout:
-                    normalLayout()
-                    nextButtonView()
+        ZStack { // Removed nested NavigationView
+            switch viewState {
+            case .maximizingFirstImage:
+                displayImage(photo: currentPhoto1, duration: 2, chainToNextState: .maximizingSecondImage) {}
+            case .maximizingSecondImage:
+                displayImage(photo: currentPhoto2, duration: 2, chainToNextState: .normalLayout) {}
+            case .enlargingImage1:
+                displayImage(photo: currentPhoto1, duration: 2, chainToNextState: .normalLayout) {}
+            case .enlargingImage2:
+                displayImage(photo: currentPhoto2, duration: 2, chainToNextState: .normalLayout) {}
+            case .normalLayout:
+                normalLayout()
+                nextButtonView()
+            }
+        }
+        .ignoresSafeArea() // Allow images to extend behind navigation bar and safe area
+        .navigationTitle("WutYaLike")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: MyHeartView(scoreManager: scoreManager)) {
+                    Text("MyHeart")
+                        .foregroundColor(.pink)
                 }
+                .accessibilityLabel("Navigate to MyHeart View")
+                .accessibilityHint("Shows your heart's top scores")
             }
-            .ignoresSafeArea() // Allow images to extend behind navigation bar and safe area
-            .navigationTitle("WutYaLike")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: MyHeartView(scoreManager: scoreManager)) {
-                        Text("MyHeart")
-                            .foregroundColor(.pink)
-                    }
-                }
-            }
-            .onAppear {
-                loadNextPair()
-                makeNavigationBarTransparent() // Make the navigation bar background transparent
-            }
+        }
+        .onAppear {
+            loadNextPair()
+            makeNavigationBarTransparent() // Make the navigation bar background transparent
+
+            // Play booting up sound if enabled
+          //  if settingsManager.soundEnabled {
+         //       soundManager.playSound(named: "bootup")
+         //   }
         }
     }
 
@@ -93,8 +93,12 @@ struct ImageScoringView: View {
                                 }
                             }
                     } else if phase.error != nil {
-                        // Error placeholder
+                        // Error placeholder with message
                         Color.red
+                            .overlay(
+                                Text("Failed to load image")
+                                    .foregroundColor(.white)
+                            )
                     } else {
                         // Placeholder while loading
                         ProgressView()
@@ -103,6 +107,7 @@ struct ImageScoringView: View {
             } else {
                 // Handle case where photo is nil
                 Text("No Image Available")
+                    .foregroundColor(.gray)
             }
         }
     }
@@ -124,8 +129,12 @@ struct ImageScoringView: View {
                                 .clipped()
                                 .allowsHitTesting(false)
                         } else if phase.error != nil {
-                            // Error placeholder
+                            // Error placeholder with message
                             Color.red
+                                .overlay(
+                                    Text("Failed to load image")
+                                        .foregroundColor(.white)
+                                )
                         } else {
                             // Placeholder while loading
                             ProgressView()
@@ -135,6 +144,11 @@ struct ImageScoringView: View {
                     // Enlarge Button
                     Button(action: {
                         self.viewState = .enlargingImage1
+
+                        // Play booting up sound if enabled
+                     //   if settingsManager.soundEnabled {
+                    //        soundManager.playSound(named: "bootup")
+                   //     }
                     }) {
                         Image(systemName: "arrow.up.left.and.arrow.down.right")
                             .foregroundColor(.white)
@@ -142,6 +156,8 @@ struct ImageScoringView: View {
                             .background(Color.black.opacity(0.5))
                             .clipShape(Circle())
                     }
+                    .accessibilityLabel("Enlarge First Image")
+                    .accessibilityHint("Maximizes the first image for a closer look")
                     .position(x: 30, y: UIScreen.main.bounds.height / 2)
                 }
             }
@@ -159,8 +175,14 @@ struct ImageScoringView: View {
                                 .clipped()
                                 .allowsHitTesting(false)
                         } else if phase.error != nil {
+                            // Error placeholder with message
                             Color.red
+                                .overlay(
+                                    Text("Failed to load image")
+                                        .foregroundColor(.white)
+                                )
                         } else {
+                            // Placeholder while loading
                             ProgressView()
                         }
                     }
@@ -168,6 +190,11 @@ struct ImageScoringView: View {
                     // Enlarge Button
                     Button(action: {
                         self.viewState = .enlargingImage2
+
+                        // Play booting up sound if enabled
+                     //   if settingsManager.soundEnabled {
+                   //         soundManager.playSound(named: "bootup")
+                  //      }
                     }) {
                         Image(systemName: "arrow.up.left.and.arrow.down.right")
                             .foregroundColor(.white)
@@ -175,6 +202,8 @@ struct ImageScoringView: View {
                             .background(Color.black.opacity(0.5))
                             .clipShape(Circle())
                     }
+                    .accessibilityLabel("Enlarge Second Image")
+                    .accessibilityHint("Maximizes the second image for a closer look")
                     .position(x: (UIScreen.main.bounds.width / 2) - 30, y: UIScreen.main.bounds.height / 2)
                 }
             }
@@ -222,6 +251,8 @@ struct ImageScoringView: View {
         .onTapGesture {
             submitScoreAndGetNextPair()
         }
+        .accessibilityLabel("Submit and Next")
+        .accessibilityHint("Submits your score and loads the next pair of images")
     }
 
     // MARK: - Action Methods
@@ -237,8 +268,8 @@ struct ImageScoringView: View {
         scoreManager.addScore(
             slider1: sliderValue1 * 100,
             slider2: sliderValue2 * 100,
-            image1: photo1.id ?? "",
-            image2: photo2.id ?? "",
+            image1: photo1.id,
+            image2: photo2.id,
             image1URL: photo1.url,
             image2URL: photo2.url,
             relationalScore: relationalScore
@@ -253,6 +284,13 @@ struct ImageScoringView: View {
         slider1EndColor = randomColor()
         slider2StartColor = randomColor()
         slider2EndColor = randomColor()
+
+        // Haptic Feedback on Submit
+     //   if settingsManager.hapticFeedbackEnabled { // Added
+    //        let generator = UIImpactFeedbackGenerator(style: .medium)
+    //        generator.prepare()
+   //         generator.impactOccurred(intensity: CGFloat(Float(settingsManager.hapticStrength)))
+ //       }
 
         // Load the next pair of images
         loadNextPair()
@@ -310,12 +348,31 @@ struct ImageScoringView: View {
     }
 }
 
+struct ImageScoringView_Previews: PreviewProvider {
+    static var previews: some View {
+        let authVM = AuthViewModel()
+        let scoreMgr = ScoreManager(authViewModel: authVM)
+        let imgMgr = ImageManager(scoreManager: scoreMgr)
+        let settingsMgr = SettingsManager()
+        let soundMgr = SoundManager.shared
+
+        ImageScoringView()
+            .environmentObject(scoreMgr)
+            .environmentObject(imgMgr)
+            .environmentObject(settingsMgr)
+            .environmentObject(soundMgr)
+    }
+}
+
 // MARK: - SliderView Component
 
 struct SliderView: View {
     @Binding var sliderValue: Double
     let startColor: Color
     let endColor: Color
+
+    @EnvironmentObject var settingsManager: SettingsManager // Injected
+    @EnvironmentObject var soundManager: SoundManager // Injected
 
     var body: some View {
         VerticalSlider(
@@ -326,8 +383,8 @@ struct SliderView: View {
                 endColor: endColor
             ),
             trackColor: .gray,
-            thumbOpacity: 0.5,
-            hapticFeedback: true
+            thumbOpacity: 0.5
+            // Removed hapticFeedback parameter
         )
         .frame(width: 40, height: UIScreen.main.bounds.height * 0.9)
         .opacity(0.7)

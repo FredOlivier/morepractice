@@ -4,6 +4,11 @@ import SwiftUI
 
 struct SignInView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var scoreManager: ScoreManager
+    @EnvironmentObject var mediaManager: MediaManager
+ //   @EnvironmentObject var autoChatManager: AutoChatManager
+    @EnvironmentObject var appViewModel: AppViewModel
+    @EnvironmentObject var linkingSettingsManager: LinkingSettingsManager
 
     @State private var email: String = ""
     @State private var password: String = ""
@@ -14,77 +19,80 @@ struct SignInView: View {
     @State private var showAlert: Bool = false
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text("Sign In")
-                    .font(.largeTitle)
-                    .bold()
-                
-                // Email TextField
-                TextField("Email", text: $email)
-                    .keyboardType(.emailAddress)
-                    .autocapitalization(.none)
+        VStack(spacing: 20) {
+            Text("Sign In")
+                .font(.largeTitle)
+                .bold()
+            
+            // Email TextField
+            TextField("Email", text: $email)
+                .keyboardType(.emailAddress)
+                .autocapitalization(.none)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(8)
+                .accessibilityLabel("Email Field")
+                .accessibilityHint("Enter your email address")
+            
+            // Password SecureField
+            SecureField("Password", text: $password)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(8)
+                .accessibilityLabel("Password Field")
+                .accessibilityHint("Enter your password")
+           
+            // Error Message
+            if showError {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .multilineTextAlignment(.center)
+                    .accessibilityLabel("Error Message")
+                    .accessibilityHint(errorMessage)
+            }
+            
+            // Sign In Button or Loading Indicator
+            if isLoading {
+                ProgressView("Signing In...")
+                    .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(8)
-                    .accessibilityLabel("Email Field")
-                    .accessibilityHint("Enter your email address")
-                
-                // Password SecureField
-                SecureField("Password", text: $password)
-                    .padding()
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(8)
-                    .accessibilityLabel("Password Field")
-                    .accessibilityHint("Enter your password")
-               
-                // Error Message
-                if showError {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .multilineTextAlignment(.center)
-                        .accessibilityLabel("Error Message")
-                        .accessibilityHint(errorMessage)
-                }
-                
-                // Sign In Button or Loading Indicator
-                if isLoading {
-                    ProgressView("Signing In...")
+            } else {
+                Button(action: {
+                    login()
+                }) {
+                    Text("Sign In")
+                        .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                } else {
-                    Button(action: {
-                        login()
-                    }) {
-                        Text("Sign In")
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(8)
-                    }
-                    .accessibilityLabel("Sign In Button")
-                    .accessibilityHint("Tap to sign into your account")
+                        .background(Color.blue)
+                        .cornerRadius(8)
                 }
-                
-                // Navigation to Sign Up View
-                NavigationLink(destination: SignUpView()) {
-                    Text("Don't have an account? Sign Up")
-                        .foregroundColor(.blue)
-                        .underline()
-                }
-                .padding(.top, 10)
-                
-                Spacer()
+                .accessibilityLabel("Sign In Button")
+                .accessibilityHint("Tap to sign into your account")
             }
-            .padding()
-            .navigationTitle("Sign In")
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Sign In Failed"),
-                      message: Text(errorMessage),
-                      dismissButton: .default(Text("OK")))
+            
+            // Navigation to Sign Up View
+            NavigationLink(destination: SignUpView()
+                .environmentObject(authViewModel)
+                                    .environmentObject(scoreManager)
+                                    .environmentObject(mediaManager)
+       //                             .environmentObject(autoChatManager)
+                                    .environmentObject(appViewModel)) {
+                Text("Don't have an account? Sign Up")
+                    .foregroundColor(.blue)
+                    .underline()
             }
+            .padding(.top, 10)
+            
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Sign In")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Sign In Failed"),
+                  message: Text(errorMessage),
+                  dismissButton: .default(Text("OK")))
         }
     }
     
@@ -100,11 +108,14 @@ struct SignInView: View {
         }
         
         isLoading = true
+        showError = false
+        errorMessage = ""
+        
         authViewModel.signIn(email: email, password: password) { success, error in
             isLoading = false
             if success {
                 // Successful login is handled by AuthViewModel's listener.
-                self.showError = false
+                print("Sign-In Successful.")
             } else {
                 errorMessage = error?.localizedDescription ?? "An unknown error occurred."
                 showError = true
@@ -117,10 +128,14 @@ struct SignInView: View {
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
         let appVM = AppViewModel()
-        
+        let settingsMgr = SettingsManager()
+        let linkingMgr = LinkingSettingsManager()
         SignInView()
             .environmentObject(appVM.authViewModel)
             .environmentObject(appVM.scoreManager)
-            .environmentObject(appVM.imageManager)
+            .environmentObject(appVM.mediaManager)
+            .environmentObject(settingsMgr) // Inject separate
+            .environmentObject(linkingMgr)
+        
     }
 }

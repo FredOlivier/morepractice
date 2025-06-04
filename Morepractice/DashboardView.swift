@@ -39,7 +39,12 @@ struct DashboardView: View {
             .accessibilityLabel("Chat")
             .accessibilityHint("Open the chat interface")
             .fullScreenCover(isPresented: $showChatView) {
-                ChatViewWrapper()
+                // Initialize ChatViewModel with a unique chatId
+                let chatId = UUID().uuidString  // Replace with your logic for chatId
+                let chatVM = ChatViewModel(chatId: chatId, authViewModel: authViewModel)
+                
+                // Present ChatViewWrapper with the initialized ChatViewModel
+                ChatViewWrapper(chatViewModel: chatVM)
                     .environmentObject(authViewModel)
                     .environmentObject(scoreManager)
                     .environmentObject(imageManager)
@@ -101,7 +106,6 @@ struct DashboardView: View {
         }
         .padding()
     }
-
 
     struct UserData: Identifiable {
         let id: UUID

@@ -6,6 +6,8 @@ struct ImageScoringViewWrapper: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var scoreManager: ScoreManager
+    @EnvironmentObject var settingsManager: SettingsManager // Added
+    @EnvironmentObject var soundManager: SoundManager // Added
 
     var body: some View {
         NavigationStack {

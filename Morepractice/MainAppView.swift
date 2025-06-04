@@ -1,24 +1,24 @@
-// MainAppView.swift
+//
+//  MainAppView.swift
+//  Morepractice
+//
+//  Created by Example on 01/11/2024.
+//
 
 import SwiftUI
 
 struct MainAppView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
-    @EnvironmentObject var scoreManager: ScoreManager
-    @EnvironmentObject var imageManager: ImageManager
-
+    @EnvironmentObject var appViewModel: AppViewModel
+    
     var body: some View {
         TabView {
-            // Dashboard Tab
             NavigationStack {
                 DashboardView()
-                    // No need to inject environment objects again as they are already in the environment
             }
             .tabItem {
                 Label("Dashboard", systemImage: "house")
             }
-
-            // Settings Tab
+            
             NavigationStack {
                 SettingsView()
             }
@@ -26,16 +26,24 @@ struct MainAppView: View {
                 Label("Settings", systemImage: "gear")
             }
         }
+        // Full-Screen Chat
+        .fullScreenCover(item: $appViewModel.currentEphemeralChat) { ephemeralChatVM in
+            EphemeralChatContainer(
+                ephemeralChatVM: ephemeralChatVM
+            ) {
+                // Callback to end the ephemeral chat
+                appViewModel.endEphemeralChat()
+            }
+        }
     }
 }
+
+// MARK: - Preview
 
 struct MainAppView_Previews: PreviewProvider {
     static var previews: some View {
         let appVM = AppViewModel()
-
         MainAppView()
-            .environmentObject(appVM.authViewModel)
-            .environmentObject(appVM.scoreManager)
-            .environmentObject(appVM.imageManager)
+            .environmentObject(appVM)
     }
 }
