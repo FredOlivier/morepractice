@@ -1,9 +1,9 @@
 //  SingleVideoScoringView.swift
 //  Morepractice
 //
-//  • Title text removed (blank)
-//  • Video fills entire screen (scaledToFill + ignoresSafeArea)
-//  • Video loops continuously – even while sliders are shown
+//  • Smaller toolbar items
+//  • Custom small back button only in normal state
+//  • Hide toolbar during video-only focus (no overlay)
 
 import SwiftUI
 import AVKit
@@ -13,6 +13,7 @@ struct SingleVideoScoringView: View {
     let mediaItem: MediaItem
 
     // MARK: - Environment
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var scoreManager: ScoreManager
     @EnvironmentObject var mediaManager: MediaManager
@@ -54,8 +55,13 @@ struct SingleVideoScoringView: View {
             player?.pause()
             player = nil
         }
-        .navigationTitle("")                          // <- blank title
-        .toolbar { toolbarUI }
+        .navigationTitle("")                          // blank title
+        .navigationBarBackButtonHidden(true)          // hide system back
+        .toolbar {
+            if toolbarShouldBeVisible {
+                toolbarUI
+            }
+        }
         .navigationDestination(isPresented: $navigateToMediaInteraction) {
             MediaInteractionView()
                 .environmentObject(authViewModel)
@@ -68,6 +74,10 @@ struct SingleVideoScoringView: View {
         .onAppear { makeNavigationBarTransparent() }
     }
 
+    private var toolbarShouldBeVisible: Bool {
+        showSliders // only after first loop (normal state for this screen)
+    }
+
     // MARK: - Video
     private func setupVideo() {
         guard let url = URL(string: mediaItem.url) else { return }
@@ -78,13 +88,13 @@ struct SingleVideoScoringView: View {
     private var sliderAndButtonsOverlay: some View {
         VStack {
             Spacer()
-            HStack(spacing: 40) {
+            HStack(spacing: 32) {
                 SliderView(sliderValue: $sliderValue,
                            startColor: .purple,
                            endColor: .orange)
                     .frame(width: 40, height: 250)
 
-                VStack(spacing: 15) {
+                VStack(spacing: 12) {
                     Button {
                         // Replay (reset slider overlay state)
                         showSliders = false
@@ -101,8 +111,9 @@ struct SingleVideoScoringView: View {
                         submitAndNavigate()
                     } label: {
                         Text("Next")
-                            .font(.headline)
-                            .padding()
+                            .font(.system(size: 16, weight: .semibold))
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
                             .foregroundColor(.white)
                             .background(Color.blue)
                             .cornerRadius(8)
@@ -110,7 +121,7 @@ struct SingleVideoScoringView: View {
                     .accessibilityLabel("Next Video")
                 }
             }
-            .padding(.bottom, 40)
+            .padding(.bottom, 36)
         }
     }
 
@@ -120,7 +131,9 @@ struct SingleVideoScoringView: View {
             Image(systemName: system)
             Text(text)
         }
-        .padding()
+        .font(.system(size: 14, weight: .semibold))
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
         .background(Color.black.opacity(0.5))
         .foregroundColor(.white)
         .cornerRadius(8)
@@ -139,25 +152,42 @@ struct SingleVideoScoringView: View {
     @ToolbarContentBuilder
     private var toolbarUI: some ToolbarContent {
         ToolbarItem(placement: .navigationBarLeading) {
-            NavigationLink {
-                CircleDashboardView()
-                    .environmentObject(authViewModel)
-                    .environmentObject(scoreManager)
-                    .environmentObject(mediaManager)
-                    .environmentObject(appViewModel)
-                    .environmentObject(settingsManager)
-                    .environmentObject(linkingSettingsManager)
-            } label: {
-                Image(systemName: "house.fill")
-                    .foregroundColor(.white)
-                    .padding(8)
-                    .background(Color.blue)
-                    .clipShape(Circle())
+            HStack(spacing: 10) {
+                // Custom back (small), only in normal state
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.white)
+                        .font(.system(size: 16, weight: .semibold))
+                        .padding(6)
+                        .background(Color.black.opacity(0.4))
+                        .clipShape(Circle())
+                }
+
+                NavigationLink {
+                    CircleDashboardView()
+                        .environmentObject(authViewModel)
+                        .environmentObject(scoreManager)
+                        .environmentObject(mediaManager)
+                        .environmentObject(appViewModel)
+                        .environmentObject(settingsManager)
+                        .environmentObject(linkingSettingsManager)
+                } label: {
+                    Image(systemName: "house.fill")
+                        .foregroundColor(.white)
+                        .font(.system(size: 14, weight: .medium))
+                        .padding(6)
+                        .background(Color.blue)
+                        .clipShape(Circle())
+                }
             }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
             NavigationLink(destination: MyHeartView(scoreManager: scoreManager)) {
-                Text("MyHeart").foregroundColor(.pink)
+                Text("MyHeart")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.pink)
             }
         }
     }
@@ -166,14 +196,14 @@ struct SingleVideoScoringView: View {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .clear
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.clear] // no text colour
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.clear]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.clear]
         UINavigationBar.appearance().standardAppearance  = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 }
 
-// MARK: - SliderView (unchanged)
+// MARK: - SliderView (unchanged except sizes in overlay)
 struct SliderView: View {
     @Binding var sliderValue: Double
     let startColor: Color

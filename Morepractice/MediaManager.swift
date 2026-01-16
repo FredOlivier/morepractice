@@ -2,10 +2,11 @@
 //  MediaManager.swift
 //  Morepractice
 //
-//  26 Apr 2025  –  rev‑F
-//  • catalogue fallback when single_image query empty
-//  • user‑upload pair parser supports mediaURLs[2]
-//  • SHA‑1 helper to fabricate IDs when absent
+//  26 Apr 2025  –  rev‑H
+//  • Queue probabilities (testing focus):
+//    - 80%: pair from two catalogue singles
+//    - 20%: catalogue explicit pairs
+//    - Fallback between those two; else placeholder
 //
 
 import Foundation
@@ -18,8 +19,6 @@ import CryptoKit
 
 enum MediaKind { case image, video }
 enum InteractionType { case pair, singleImage, singleVideo, placeholder }
-
-
 
 struct NextInteraction {
     var interactionType: InteractionType
@@ -231,8 +230,8 @@ final class MediaManager: ObservableObject {
 
                     let uploader = d.reference.parent.parent?.documentID
                     let path = d.reference.path
-                    let docIdField   = d["id"] as? String          // NEW
-                    let chosenId     = docIdField ?? Self.sha1(url)   // <─ use it!
+                    let docIdField   = d["id"] as? String
+                    let chosenId     = docIdField ?? Self.sha1(url)
                     let item = MediaItem(id: chosenId, mediaKind: kind,
                                          category:nil, url:url,
                                          uploaderUid:uploader,
@@ -282,18 +281,15 @@ final class MediaManager: ObservableObject {
         buildQueue()
     }
 
-    // probabilities
-  /*  private let pCatPair   = 0.45
-    private let pMixedPair = 0.30
-    private let pUpPair    = 0.10
-    private let pCatVid    = 0.10
-    private let pUpVid     = 0.05
-*/
-    private let pCatPair   = 0.0001
-      private let pMixedPair = 0.10
-      private let pUpPair    = 0.0001
-      private let pCatVid    = 0.90
-      private let pUpVid     = 0.0001
+    // New helpers for pairing from catalogue singles
+    private func makePairFromTwoCatalogueSingles() -> ImagePair? {
+        guard catSinglesImg.count >= 2 else { return nil }
+        guard let a = catSinglesImg.randomPop(),
+              let b = catSinglesImg.randomPop() else { return nil }
+        return (a,b)
+    }
+
+    // Priority with probabilities focused on catalogue sources
     private func buildQueue() {
 
         nextInteractionQueue.removeAll()
@@ -306,35 +302,40 @@ final class MediaManager: ObservableObject {
         }
         noMediaAvailable = false
 
+        // Weights
+        let pCatSinglesPair: Double = 0.80
+        let pCatPairs:       Double = 0.20
+
         for _ in 0..<queueSize {
-            let r = Double.random(in:0...1)
-            switch r {
-            case 0..<pCatPair:
+            let r = Double.random(in: 0...1)
+
+            if r < pCatSinglesPair {
+                // Try cat singles → pair, else fall back to catPairs
+                if let p = makePairFromTwoCatalogueSingles() {
+                    nextInteractionQueue.append(.init(interactionType:.pair,
+                                                      media1:p.0, media2:p.1))
+                    continue
+                }
                 if let p = catPairs.randomPop() {
                     nextInteractionQueue.append(.init(interactionType:.pair,
                                                       media1:p.0, media2:p.1))
+                    continue
                 }
-            case pCatPair ..< pCatPair+pMixedPair:
-                if let p = makeMixedPair() {
+            } else {
+                // Try catPairs, else fall back to cat singles → pair
+                if let p = catPairs.randomPop() {
                     nextInteractionQueue.append(.init(interactionType:.pair,
                                                       media1:p.0, media2:p.1))
+                    continue
                 }
-            case pCatPair+pMixedPair ..< pCatPair+pMixedPair+pUpPair:
-                if let p = uploadPairs.randomPop() {
+                if let p = makePairFromTwoCatalogueSingles() {
                     nextInteractionQueue.append(.init(interactionType:.pair,
                                                       media1:p.0, media2:p.1))
-                }
-            case pCatPair+pMixedPair+pUpPair ..< pCatPair+pMixedPair+pUpPair+pCatVid:
-                if let v = catSinglesVid.randomPop() {
-                    nextInteractionQueue.append(.init(interactionType:.singleVideo,
-                                                      media1:v, media2:nil))
-                }
-            default:
-                if let v = uploadSinglesVid.randomPop() {
-                    nextInteractionQueue.append(.init(interactionType:.singleVideo,
-                                                      media1:v, media2:nil))
+                    continue
                 }
             }
+
+            // If neither branch succeeded for this slot, skip
         }
 
         if nextInteractionQueue.isEmpty {
@@ -344,12 +345,6 @@ final class MediaManager: ObservableObject {
         }
 
         prefetch()
-    }
-
-    private func makeMixedPair() -> ImagePair? {
-        guard let a = catSinglesImg.randomPop(),
-              let b = uploadSinglesImg.randomPop() else { return nil }
-        return Bool.random() ? (a,b) : (b,a)
     }
 
     private func allPoolsEmpty() -> Bool {

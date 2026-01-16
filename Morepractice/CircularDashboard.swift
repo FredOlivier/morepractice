@@ -6,6 +6,10 @@
 //  • Outer buttons are slightly larger (200 × 200 → nicer balance)
 //  • No behavioural changes or navigation tweaks
 //
+//  2025‑05‑01 – Animated borders (toggle via SettingsManager.animatedBordersEnabled)
+//  • Center (Explore): rainbow angular gradient rotating slowly
+//  • Outer buttons: color‑family gradient rotating slowly
+//
 
 import SwiftUI
 
@@ -49,6 +53,11 @@ struct CircularDashboard: View {
     @State private var exploreGradientColors: [Color] = [
         CircularDashboard.randomColor(), CircularDashboard.randomColor()
     ]
+
+    // ---------------------------------------------------------------------
+    // MARK: Animation state (borders)
+    // ---------------------------------------------------------------------
+    @State private var borderPhase: Double = 0
 
     // ---------------------------------------------------------------------
     // MARK: Body
@@ -96,6 +105,7 @@ struct CircularDashboard: View {
                 //---------------------------------------------------------
                 dashboardButton(buttons[4], isCenter: true)
                     .frame(width: 220, height: 220)
+                    .overlay(centerAnimatedBorder)
                     .zIndex(1)
 
                 //---------------------------------------------------------
@@ -106,6 +116,7 @@ struct CircularDashboard: View {
                     dashboardButton(b, isCenter: false)
                         .frame(width: outerButtonDiameter,
                                height: outerButtonDiameter)
+                        .overlay(outerAnimatedBorder(for: idx))
                         .offset(x: offsetX(for: idx, in: geo),
                                 y: offsetY(for: idx, in: geo))
                 }
@@ -117,6 +128,25 @@ struct CircularDashboard: View {
                 backgroundGradients = (0..<3).map { _ in
                     CircularDashboard.randomGradientWithBrightness()
                 }.sorted { $0.brightness < $1.brightness }
+                startOrStopBorderAnimation()
+            }
+            .onChange(of: settingsManager.animatedBordersEnabled) { _ in
+                startOrStopBorderAnimation()
+            }
+        }
+    }
+
+    // Start/stop the continuous border animation based on settings
+    private func startOrStopBorderAnimation() {
+        if settingsManager.animatedBordersEnabled {
+            withAnimation(.linear(duration: 8).repeatForever(autoreverses: false)) {
+                // animate phase across 0...1 (rotation uses degrees)
+                borderPhase = 1
+            }
+        } else {
+            // snap back to 0 and remove implicit animation
+            withAnimation(.none) {
+                borderPhase = 0
             }
         }
     }
@@ -145,6 +175,79 @@ struct CircularDashboard: View {
         default: return 0
         }
     }
+
+    // ---------------------------------------------------------------------
+    // MARK: Animated border overlays
+    // ---------------------------------------------------------------------
+    // Center: full rainbow angular gradient that rotates
+    private var centerAnimatedBorder: some View {
+        Group {
+            if settingsManager.animatedBordersEnabled {
+                Circle()
+                    .strokeBorder(rainbowGradient, lineWidth: 8)
+                    .rotationEffect(.degrees(borderPhase * 360))
+                    .opacity(colorScheme == .dark ? 0.9 : 0.85)
+            } else {
+                Circle()
+                    .strokeBorder(Color.white.opacity(colorScheme == .dark ? 0.25 : 0.2), lineWidth: 6)
+            }
+        }
+    }
+
+    // Outer: color-family gradient per index; rotates
+    private func outerAnimatedBorder(for idx: Int) -> some View {
+        Group {
+            if settingsManager.animatedBordersEnabled {
+                Circle()
+                    .strokeBorder(colorFamilyGradient(for: idx), lineWidth: 6)
+                    .rotationEffect(.degrees(borderPhase * 360))
+                    .opacity(colorScheme == .dark ? 0.85 : 0.8)
+            } else {
+                Circle()
+                    .strokeBorder(Color.white.opacity(colorScheme == .dark ? 0.18 : 0.15), lineWidth: 5)
+            }
+        }
+    }
+
+    // Build a rainbow AngularGradient
+    private var rainbowGradient: AngularGradient {
+        let colors: [Color] = [
+            .red, .orange, .yellow, .green, .mint, .teal, .cyan, .blue, .indigo, .purple, .pink, .red
+        ]
+        return AngularGradient(gradient: Gradient(colors: colors),
+                               center: .center)
+    }
+
+    // Build a color-family AngularGradient for an outer button:
+    // Each index maps to a base color; we vary saturation/brightness slightly.
+    private func colorFamilyGradient(for idx: Int) -> AngularGradient {
+        let base: UIColor
+        switch idx {
+        case 0: base = UIColor.systemRed
+        case 1: base = UIColor.systemYellow
+        case 2: base = UIColor.systemBlue
+        case 3: base = UIColor.systemGreen
+        default: base = UIColor.systemGray
+        }
+
+        var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 1
+        base.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
+
+        // Build a small band of related colors by tweaking s/b
+        func clamp(_ v: CGFloat) -> CGFloat { max(0, min(1, v)) }
+        let s1 = clamp(s * 0.85)
+        let s2 = clamp(s * 1.05)
+        let b1 = clamp(b * 0.80)
+        let b2 = clamp(b * 1.05)
+
+        let c1 = Color(UIColor(hue: h, saturation: s1, brightness: b2, alpha: a))
+        let c2 = Color(UIColor(hue: h, saturation: s2, brightness: b1, alpha: a))
+        let c3 = Color(UIColor(hue: h, saturation: s,  brightness: b,  alpha: a))
+
+        return AngularGradient(gradient: Gradient(colors: [c1, c3, c2, c1]),
+                               center: .center)
+    }
+
     // ---------------------------------------------------------------------
     // MARK: Button Factory
     // ---------------------------------------------------------------------

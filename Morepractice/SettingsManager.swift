@@ -45,6 +45,13 @@ class SettingsManager: ObservableObject {
             UserDefaults.standard.set(linkingMode, forKey: "linkingMode")
         }
     }
+
+    /// NEW: Animate dashboard circle borders (rainbow center, color-family on outers)
+    @Published var animatedBordersEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(animatedBordersEnabled, forKey: "animatedBordersEnabled")
+        }
+    }
     
     // MARK: - Initialization
     init() {
@@ -54,5 +61,6 @@ class SettingsManager: ObservableObject {
         self.hapticOnNextButton = UserDefaults.standard.object(forKey: "hapticOnNextButton") as? Bool ?? true
         self.soundEnabled = UserDefaults.standard.object(forKey: "soundEnabled") as? Bool ?? true
         self.linkingMode = UserDefaults.standard.object(forKey: "linkingMode") as? Bool ?? false
+        self.animatedBordersEnabled = UserDefaults.standard.object(forKey: "animatedBordersEnabled") as? Bool ?? true
     }
 }

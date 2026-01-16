@@ -1,7 +1,8 @@
 //  PairScoringView.swift
 //  Morepractice
 //
-//  Title text removed (blank) – everything else unchanged.
+//  Smaller toolbar items; custom back only in normal state;
+//  hide toolbars during initial maximise and while enlarged.
 
 import SwiftUI
 import FirebaseFirestore
@@ -12,6 +13,7 @@ struct PairScoringView: View {
     let media2: MediaItem
 
     // MARK: - Environment Objects
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var settingsManager: SettingsManager
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var scoreManager: ScoreManager
@@ -79,10 +81,12 @@ struct PairScoringView: View {
                 .environmentObject(settingsManager)
                 .environmentObject(linkingSettingsManager)
         }
-        .edgesIgnoringSafeArea(.all)
-        .navigationTitle("")                               // <- blank title
+        .background(Color.black)
+        .ignoresSafeArea()
+        .navigationTitle("")
+        .navigationBarBackButtonHidden(true)     // hide system back
         .toolbar {
-            if enlargedSide == .none {
+            if toolbarShouldBeVisible {
                 toolbarItems
             }
         }
@@ -92,43 +96,61 @@ struct PairScoringView: View {
         }
     }
 
+    private var toolbarShouldBeVisible: Bool {
+        enlargedSide == .none && !isInitialSequenceActive
+    }
+
     // =========================================================
     // MARK: Layout & sub‑views
     // =========================================================
     private func normalLayoutView() -> some View {
-        ZStack {
-            // Images (side‑by‑side)
-            HStack(spacing: 0) {
-                sideMediaView(media: media1, isLeft: true)
-                sideMediaView(media: media2, isLeft: false)
-            }
-            .edgesIgnoringSafeArea(.all)
+        GeometryReader { geo in
+            let w = geo.size.width
+            let h = geo.size.height
 
-            slidersOverlay()
-            enlargeButtonsOverlay().zIndex(3)
-            skipNextControl()
+            ZStack {
+                // Images (side‑by‑side)
+                HStack(spacing: 0) {
+                    sideMediaView(media: media1, isLeft: true, width: w/2, height: h)
+                    sideMediaView(media: media2, isLeft: false, width: w/2, height: h)
+                }
+
+                slidersOverlay(width: w, height: h)
+                enlargeButtonsOverlay().zIndex(3)
+                skipNextControl(containerWidth: w, containerHeight: h)
+            }
+            .frame(width: w, height: h)
+            .background(Color.black)
         }
     }
 
-    private func sideMediaView(media: MediaItem, isLeft: Bool) -> some View {
+    private func sideMediaView(media: MediaItem, isLeft: Bool, width: CGFloat, height: CGFloat) -> some View {
         ZStack {
             AsyncImage(url: URL(string: media.url)) { phase in
                 switch phase {
-                case .empty:   ProgressView().tint(.white)
-                case .success(let img): img.resizable().scaledToFill()
-                case .failure: Color.red.overlay(Text("Failed").foregroundColor(.white))
-                @unknown default: EmptyView()
+                case .empty:
+                    ProgressView().tint(.white)
+                        .frame(width: width, height: height)
+                        .background(Color.black)
+                case .success(let img):
+                    img.resizable()
+                        .scaledToFill()
+                        .frame(width: width, height: height)
+                        .clipped()
+                case .failure:
+                    Color.red.overlay(Text("Failed").foregroundColor(.white))
+                        .frame(width: width, height: height)
+                @unknown default:
+                    EmptyView()
                 }
             }
-            .frame(width: UIScreen.main.bounds.width / 2,
-                   height: UIScreen.main.bounds.height)
-            .clipped()
 
             // Tap anywhere to enlarge
             Color.clear
                 .contentShape(Rectangle())
                 .onTapGesture { showFullscreen(for: isLeft ? .left : .right) }
         }
+        .frame(width: width, height: height)
     }
 
     private func enlargeButtonsOverlay() -> some View {
@@ -145,7 +167,8 @@ struct PairScoringView: View {
         Button(action: action) {
             Image(systemName: "arrow.up.left.and.arrow.down.right")
                 .foregroundColor(.white)
-                .padding(8)
+                .font(.system(size: 14, weight: .medium))
+                .padding(6)
                 .background(Color.black.opacity(0.5))
                 .clipShape(Circle())
         }
@@ -163,52 +186,50 @@ struct PairScoringView: View {
                     ZStack {
                         Circle()
                             .fill(Color.pink)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 36, height: 36)
                             .opacity(0.6)
                         Image(systemName: "heart.fill")
                             .foregroundColor(.red)
-                            .font(.system(size: 18))
+                            .font(.system(size: 16))
                         Image(systemName: "plus")
                             .foregroundColor(.white)
-                            .font(.system(size: 12))
-                            .offset(x: 10, y: -10)
+                            .font(.system(size: 10))
+                            .offset(x: 9, y: -9)
                         Image(systemName: "sparkles")
                             .foregroundColor(.yellow)
-                            .font(.system(size: 14))
-                            .offset(x: -10, y: -10)
+                            .font(.system(size: 12))
+                            .offset(x: -9, y: -9)
                     }
                 }
                 .accessibilityLabel("Add to favourites")
-                .padding(.leading, 24)
+                .padding(.leading, 20)
 
                 Spacer()
             }
-            .padding(.bottom, 32)
+            .padding(.bottom, 28)
         }
     }
 
-    private func slidersOverlay() -> some View {
+    private func slidersOverlay(width: CGFloat, height: CGFloat) -> some View {
         HStack(spacing: 0) {
             PairSliderView(value: $sliderValue1,
                            startColor: slider1StartColor,
                            endColor: slider1EndColor)
                 .onChange(of: sliderValue1) { _ in userInteracted() }
-                .frame(width: UIScreen.main.bounds.width / 2,
-                       height: UIScreen.main.bounds.height)
+                .frame(width: width / 2, height: height)
 
             PairSliderView(value: $sliderValue2,
                            startColor: slider2StartColor,
                            endColor: slider2EndColor)
                 .onChange(of: sliderValue2) { _ in userInteracted() }
-                .frame(width: UIScreen.main.bounds.width / 2,
-                       height: UIScreen.main.bounds.height)
+                .frame(width: width / 2, height: height)
         }
     }
 
-    private func skipNextControl() -> some View {
-        let size: CGFloat = 70
-        let midX = UIScreen.main.bounds.width  / 2
-        let midY = UIScreen.main.bounds.height / 2
+    private func skipNextControl(containerWidth w: CGFloat, containerHeight h: CGFloat) -> some View {
+        let size: CGFloat = 64
+        let midX = w / 2
+        let midY = h / 2
 
         return Group {
             if userInteractedWithSliders {
@@ -217,7 +238,7 @@ struct PairScoringView: View {
                         .frame(width: size, height: size)
                         .shadow(radius: 10)
                         .overlay(Text("+")
-                            .font(.largeTitle)
+                            .font(.title)
                             .foregroundColor(.white))
                 }
                 .position(x: midX, y: midY)
@@ -233,7 +254,7 @@ struct PairScoringView: View {
                         Circle().fill(Color.blue)
                             .frame(width: size, height: size)
                             .overlay(Image(systemName: "forward.fill")
-                                .font(.title)
+                                .font(.title2)
                                 .foregroundColor(.white))
                     }
                     .position(x: midX, y: midY)
@@ -246,25 +267,42 @@ struct PairScoringView: View {
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItem(placement: .navigationBarLeading) {
-            NavigationLink {
-                CircleDashboardView()
-                    .environmentObject(authViewModel)
-                    .environmentObject(scoreManager)
-                    .environmentObject(mediaManager)
-                    .environmentObject(appViewModel)
-                    .environmentObject(settingsManager)
-                    .environmentObject(linkingSettingsManager)
-            } label: {
-                Image(systemName: "house.fill")
-                    .foregroundColor(.white)
-                    .padding(8)
-                    .background(Color.blue)
-                    .clipShape(Circle())
+            HStack(spacing: 10) {
+                // Custom back (small), only in normal state
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.white)
+                        .font(.system(size: 16, weight: .semibold))
+                        .padding(6)
+                        .background(Color.black.opacity(0.4))
+                        .clipShape(Circle())
+                }
+
+                NavigationLink {
+                    CircleDashboardView()
+                        .environmentObject(authViewModel)
+                        .environmentObject(scoreManager)
+                        .environmentObject(mediaManager)
+                        .environmentObject(appViewModel)
+                        .environmentObject(settingsManager)
+                        .environmentObject(linkingSettingsManager)
+                } label: {
+                    Image(systemName: "house.fill")
+                        .foregroundColor(.white)
+                        .font(.system(size: 14, weight: .medium))
+                        .padding(6)
+                        .background(Color.blue)
+                        .clipShape(Circle())
+                }
             }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
             NavigationLink(destination: MyHeartView(scoreManager: scoreManager)) {
-                Text("MyHeart").foregroundColor(.pink)
+                Text("MyHeart")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.pink)
             }
         }
     }
@@ -343,9 +381,7 @@ extension PairScoringView {
                 case .success(let img):
                     img.resizable()
                         .scaledToFill()
-                        .frame(width: UIScreen.main.bounds.width,
-                               height: UIScreen.main.bounds.height)
-                        .clipped()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .ignoresSafeArea()
                         .onTapGesture { onTap() }
                 case .failure:
@@ -375,7 +411,7 @@ extension PairScoringView {
 }
 
 // =========================================================
-// MARK: Slider sub‑view (unchanged)
+// MARK: Slider sub‑view (unchanged except size)
 // =========================================================
 private struct PairSliderView: View {
     @Binding var value: Double

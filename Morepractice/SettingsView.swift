@@ -65,7 +65,7 @@ struct SettingsView: View {
                     }
                     .accessibilityLabel("Dark Mode")
                     .accessibilityHint("Toggle to enable or disable dark mode")
-                    
+                    Toggle("Animated Dashboard Borders", isOn: $settingsManager.animatedBordersEnabled)
                     // Haptic Feedback Toggle (note: using the correct property name)
                     Toggle("Haptic Feedback", isOn: $settingsManager.hapticFeedbackEnabled)
                         .accessibilityLabel("Haptic Feedback")
