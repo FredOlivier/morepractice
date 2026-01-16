@@ -1,0 +1,8 @@
+# Xcode user data (do not commit)
+*.xcuserstate
+xcuserdata/
+*.xcbkptlist
+
+# Derived data
+DerivedData/
+

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -97,11 +97,14 @@
 		26C810A82D3692DA00517022 /* ConnectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C810A72D3692DA00517022 /* ConnectionsView.swift */; };
 		26C810E52D4BF6F200517022 /* LinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C810E42D4BF6F200517022 /* LinkManager.swift */; };
 		26C810E72D4BF75D00517022 /* TemporaryChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C810E62D4BF75D00517022 /* TemporaryChatViewController.swift */; };
+		26CB81482F1A59EA003D4EA4 /* MediaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 26CB81472F1A59EA003D4EA4 /* MediaKit */; };
+		26CB81492F1A5A2D003D4EA4 /* MediaLab.app in Resources */ = {isa = PBXBuildFile; fileRef = 26CB81392F1A58CE003D4EA4 /* MediaLab.app */; };
 		26D404D52D0D1E3C00B88731 /* AppUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D404D42D0D1E3C00B88731 /* AppUserModel.swift */; };
 		26D404D72D0D211100B88731 /* SimilarUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D404D62D0D211100B88731 /* SimilarUserModel.swift */; };
 		26D404DB2D0D219500B88731 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D404DA2D0D219500B88731 /* UserProfileModel.swift */; };
 		26D404DF2D0D2A9E00B88731 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D404DE2D0D2A9E00B88731 /* ChatViewModel.swift */; };
 		26D404E32D0D2E1A00B88731 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D404E22D0D2E1A00B88731 /* SettingsView.swift */; };
+		26DE96E12EACB48F000FCBD5 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DE96E02EACB48F000FCBD5 /* Color+Hex.swift */; };
 		26E2AB602D5269D700C34A9F /* TemporaryChatViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E2AB5F2D5269D700C34A9F /* TemporaryChatViewWrapper.swift */; };
 		26E2AB652D53B30C00C34A9F /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 26E2AB642D53B30C00C34A9F /* SocketIO */; };
 		26E2AB672D53C08A00C34A9F /* LinkEligibilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E2AB662D53C08A00C34A9F /* LinkEligibilityManager.swift */; };
@@ -127,6 +130,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 26585A972C99502F005E0008;
 			remoteInfo = Morepractice;
+		};
+		26CB814A2F1A5A2D003D4EA4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 26585A902C99502F005E0008 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 26CB81382F1A58CE003D4EA4;
+			remoteInfo = MediaLab;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -202,11 +212,13 @@
 		26C810A72D3692DA00517022 /* ConnectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsView.swift; sourceTree = "<group>"; };
 		26C810E42D4BF6F200517022 /* LinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkManager.swift; sourceTree = "<group>"; };
 		26C810E62D4BF75D00517022 /* TemporaryChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryChatViewController.swift; sourceTree = "<group>"; };
+		26CB81392F1A58CE003D4EA4 /* MediaLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MediaLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26D404D42D0D1E3C00B88731 /* AppUserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUserModel.swift; sourceTree = "<group>"; };
 		26D404D62D0D211100B88731 /* SimilarUserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimilarUserModel.swift; sourceTree = "<group>"; };
 		26D404DA2D0D219500B88731 /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
 		26D404DE2D0D2A9E00B88731 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		26D404E22D0D2E1A00B88731 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		26DE96E02EACB48F000FCBD5 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		26E2AB5F2D5269D700C34A9F /* TemporaryChatViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryChatViewWrapper.swift; sourceTree = "<group>"; };
 		26E2AB662D53C08A00C34A9F /* LinkEligibilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkEligibilityManager.swift; sourceTree = "<group>"; };
 		26EE09232D0F86C30048DC9C /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
@@ -220,11 +232,16 @@
 		B33F26685AFDA1B59C2F1878 /* Pods-MorepracticeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MorepracticeUITests.debug.xcconfig"; path = "Target Support Files/Pods-MorepracticeUITests/Pods-MorepracticeUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		26CB813A2F1A58CE003D4EA4 /* MediaLab */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = MediaLab; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		26585A952C99502F005E0008 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26CB81482F1A59EA003D4EA4 /* MediaKit in Frameworks */,
 				261395E72CAEF485001D6BC9 /* FirebaseMessaging in Frameworks */,
 				261395DD2CAEF485001D6BC9 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				261395EB2CAEF485001D6BC9 /* FirebasePerformance in Frameworks */,
@@ -272,6 +289,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		26CB81362F1A58CE003D4EA4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -303,6 +327,7 @@
 				26585A9A2C99502F005E0008 /* Morepractice */,
 				26585AAD2C995030005E0008 /* MorepracticeTests */,
 				26585AB72C995030005E0008 /* MorepracticeUITests */,
+				26CB813A2F1A58CE003D4EA4 /* MediaLab */,
 				26585A992C99502F005E0008 /* Products */,
 				261395CD2CAEF469001D6BC9 /* Frameworks */,
 				25AA676FA4BC1E114C390705 /* Pods */,
@@ -315,6 +340,7 @@
 				26585A982C99502F005E0008 /* Morepractice.app */,
 				26585AAA2C995030005E0008 /* MorepracticeTests.xctest */,
 				26585AB42C995030005E0008 /* MorepracticeUITests.xctest */,
+				26CB81392F1A58CE003D4EA4 /* MediaLab.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -332,6 +358,7 @@
 				265BDBEF2D1A2900007D2838 /* AutoChatManager.swift */,
 				26660B4F2C99B95400A53EF2 /* bin.swift */,
 				265BDBF92D1A7973007D2838 /* ChatUtils.swift */,
+				26DE96E02EACB48F000FCBD5 /* Color+Hex.swift */,
 				26D404DE2D0D2A9E00B88731 /* ChatViewModel.swift */,
 				265BDBF72D1A5C0C007D2838 /* ChatViewModelProtocol.swift */,
 				262154D42D0D42BA003D248E /* ChatViewWrapper.swift */,
@@ -438,6 +465,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				26CB814B2F1A5A2D003D4EA4 /* PBXTargetDependency */,
 			);
 			name = Morepractice;
 			packageProductDependencies = (
@@ -468,6 +496,7 @@
 				26E2AB642D53B30C00C34A9F /* SocketIO */,
 				265C93192DA549C300262DA3 /* WebRTC */,
 				265C931B2DA54B1700262DA3 /* FirebaseVertexAI-Preview */,
+				26CB81472F1A59EA003D4EA4 /* MediaKit */,
 			);
 			productName = Morepractice;
 			productReference = 26585A982C99502F005E0008 /* Morepractice.app */;
@@ -511,6 +540,28 @@
 			productReference = 26585AB42C995030005E0008 /* MorepracticeUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		26CB81382F1A58CE003D4EA4 /* MediaLab */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26CB81452F1A58D0003D4EA4 /* Build configuration list for PBXNativeTarget "MediaLab" */;
+			buildPhases = (
+				26CB81352F1A58CE003D4EA4 /* Sources */,
+				26CB81362F1A58CE003D4EA4 /* Frameworks */,
+				26CB81372F1A58CE003D4EA4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				26CB813A2F1A58CE003D4EA4 /* MediaLab */,
+			);
+			name = MediaLab;
+			packageProductDependencies = (
+			);
+			productName = MediaLab;
+			productReference = 26CB81392F1A58CE003D4EA4 /* MediaLab.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -518,7 +569,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					26585A972C99502F005E0008 = {
@@ -531,6 +582,9 @@
 					26585AB32C995030005E0008 = {
 						CreatedOnToolsVersion = 15.0.1;
 						TestTargetID = 26585A972C99502F005E0008;
+					};
+					26CB81382F1A58CE003D4EA4 = {
+						CreatedOnToolsVersion = 26.2;
 					};
 				};
 			};
@@ -548,6 +602,7 @@
 				261396042CB2D543001D6BC9 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				26E2AB632D53B30C00C34A9F /* XCRemoteSwiftPackageReference "socket" */,
 				265C93182DA549C300262DA3 /* XCRemoteSwiftPackageReference "WebRTC" */,
+				26CB81462F1A59E9003D4EA4 /* XCLocalSwiftPackageReference "MediaKit" */,
 			);
 			productRefGroup = 26585A992C99502F005E0008 /* Products */;
 			projectDirPath = "";
@@ -556,6 +611,7 @@
 				26585A972C99502F005E0008 /* Morepractice */,
 				26585AA92C995030005E0008 /* MorepracticeTests */,
 				26585AB32C995030005E0008 /* MorepracticeUITests */,
+				26CB81382F1A58CE003D4EA4 /* MediaLab */,
 			);
 		};
 /* End PBXProject section */
@@ -567,6 +623,7 @@
 			files = (
 				26585AA52C995030005E0008 /* Preview Assets.xcassets in Resources */,
 				26585AA22C995030005E0008 /* Assets.xcassets in Resources */,
+				26CB81492F1A5A2D003D4EA4 /* MediaLab.app in Resources */,
 				26AC6B0F2CEFF5F3007A97C0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -579,6 +636,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		26585AB22C995030005E0008 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26CB81372F1A58CE003D4EA4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -662,6 +726,7 @@
 				260F07632D3032D400DB71C5 /* SettingsManager.swift in Sources */,
 				26D404DB2D0D219500B88731 /* UserProfileModel.swift in Sources */,
 				260F07652D309C3E00DB71C5 /* MediaInteractionView.swift in Sources */,
+				26DE96E12EACB48F000FCBD5 /* Color+Hex.swift in Sources */,
 				26A782812C9CA3F90074967F /* MediaManager.swift in Sources */,
 				263D04852DAB431A0058F16A /* FriendManager.swift in Sources */,
 				260F07672D309C6B00DB71C5 /* MediaProtocols.swift in Sources */,
@@ -727,6 +792,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		26CB81352F1A58CE003D4EA4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -739,6 +811,11 @@
 			isa = PBXTargetDependency;
 			target = 26585A972C99502F005E0008 /* Morepractice */;
 			targetProxy = 26585AB52C995030005E0008 /* PBXContainerItemProxy */;
+		};
+		26CB814B2F1A5A2D003D4EA4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 26CB81382F1A58CE003D4EA4 /* MediaLab */;
+			targetProxy = 26CB814A2F1A5A2D003D4EA4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -878,6 +955,7 @@
 				);
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "/Users/fredolivier/Library/Developer/Xcode/DerivedData/Morepractice-avpnqaihcwljlqfmwlshhsmbajwb/SourcePackages/checkouts/WebRTC-iOS-SDK";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = 2me;
 				INFOPLIST_KEY_NSCameraUsageDescription = yes;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = yes;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = yes;
@@ -916,6 +994,7 @@
 				);
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "/Users/fredolivier/Library/Developer/Xcode/DerivedData/Morepractice-avpnqaihcwljlqfmwlshhsmbajwb/SourcePackages/checkouts/WebRTC-iOS-SDK";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = 2me;
 				INFOPLIST_KEY_NSCameraUsageDescription = yes;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = yes;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = yes;
@@ -1022,6 +1101,72 @@
 			};
 			name = Release;
 		};
+		26CB81432F1A58D0003D4EA4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N2FYH8H5NC;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.choosingapp.MediaLab;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		26CB81442F1A58D0003D4EA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N2FYH8H5NC;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.choosingapp.MediaLab;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1061,7 +1206,23 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		26CB81452F1A58D0003D4EA4 /* Build configuration list for PBXNativeTarget "MediaLab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26CB81432F1A58D0003D4EA4 /* Debug */,
+				26CB81442F1A58D0003D4EA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		26CB81462F1A59E9003D4EA4 /* XCLocalSwiftPackageReference "MediaKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = MediaKit;
+		};
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		261395BD2CAD837A001D6BC9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -1228,6 +1389,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 261395BD2CAD837A001D6BC9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseVertexAI-Preview";
+		};
+		26CB81472F1A59EA003D4EA4 /* MediaKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MediaKit;
 		};
 		26E2AB642D53B30C00C34A9F /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
