@@ -24,7 +24,7 @@
 ## Gate commands (do not skip)
 - List schemes if needed: xcodebuild -list
 - iOS build gate:
-  xcodebuild -scheme "Morepractice" -destination 'platform=iOS Simulator,name=iPhone 15' build
+  xcodebuild -scheme "Morepractice" -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' build
 - If working in Swift packages:
   swift test -c debug
 
@@ -40,4 +40,3 @@ E) Scraping + ingestion pipeline
 - WebRTC signaling protocol changes
 - adding new third-party libraries
 - major UI navigation rewrites
-

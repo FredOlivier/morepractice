@@ -1,0 +1,34 @@
+{
+  "topic": {
+    "id": "topic_1",
+    "title": "Mars"
+  },
+  "facts": [
+    {
+      "id": "fact_1",
+      "text": "Mars is red.",
+      "mediaId": "media_1"
+    },
+    {
+      "id": "fact_2",
+      "text": "Mars has two moons.",
+      "provenance": "NASA"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q_1",
+      "prompt": "How many moons does Mars have?",
+      "choices": ["1", "2", "3"],
+      "answer": "2",
+      "explanation": "Phobos and Deimos.",
+      "difficulty": 1
+    },
+    {
+      "id": "q_2",
+      "prompt": "What color is Mars?",
+      "answer": "Red",
+      "difficulty": 1
+    }
+  ]
+}
